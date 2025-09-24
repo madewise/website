@@ -170,7 +170,41 @@ footer {
   color: #555;
 }
 
+/* About page specific */
+body.aboutpage main {
+  max-width: 1200px;       
+  margin: 50px auto;     
+  padding: 30px 40px;     
+  background: #ffffff;   
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05); 
 
+  text-align: left;       
+  color: #222;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
 
+body.aboutpage main h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #333;
+}
 
+body.aboutpage main p {
+  margin-bottom: 18px;
+}
 
+.external-links {
+    color: #0077B5; 
+    text-decoration: none; 
+}
+
+.external-links:hover {
+    text-decoration: underline; 
+}
+
+/* Can be redone later - to show current page on nav bar. TODO */
+.active {
+    text-decoration: underline; 
+}

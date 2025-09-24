@@ -71,7 +71,8 @@ async function loadEntry(filename, pushHistory = false) {
 
   // Find the matching entry in toc
   const entry = toc.find(e => e.file === filename);
-  document.title = `${entry ? entry.title : filename} – Madeline Wise`;
+  //document.title = `${entry ? entry.title : filename} – Madeline Wise`;
+  document.title = `Madeline Wise's Notebook`;
 
   currentIndex = toc.findIndex(e => e.file === filename);
 
