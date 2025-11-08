@@ -1,0 +1,156 @@
+<head>
+        <link rel="stylesheet" href="assets/style.css">
+
+</head>
+
+
+<h2>The Contextual Drift of Business Logic</h2>
+<p>
+<i>Started writing: 10/10/2025</i>
+</p>
+<br>
+<hr>
+<br>
+
+<p>
+    Like many computer science students, I began by studying programming fundamentals, learning how to write working code and understand the processing of basic algorithms. 
+    As security was considered a peripheral concern until much later in the curriculum, it wasn’t until later in my academics that I found cybersecurity, and many of my peers went into software development with nothing but a reminder in basic software engineering courses to “sanitize input.” 
+    This is majorly why I put some blame on developers who mindlessly rely on tools and silo themselves into creating applications only for their single business unit, and even further— they refuse to learn the business context into which their product solution lies. 
+    In defensive security, we often over-index on patching code vulnerabilities (the syntax of the application) while under-indexing on managing business logic flaws (the semantics of the transaction). 
+    These flaws arise because the security system, at its core, lacks business context and cannot verify the intent of an action, only its format. 
+
+</p>
+
+<br>
+<p>
+    Ultimately, the development teams get frustrated that business folks aren’t taking the time to translate their business language in the requirements documents to technical language, whilst the business folks get frustrated that the development teams are misinterpreting the fundamental risk that the function is meant to address. 
+    It’s nice to have someone in the middle to translate from business and specialty functions to technology, but the reliance on a single translator is itself a scaling problem that can be fixed by formalizing context. 
+    So, let’s take a look at how to proactively mitigate business logic flaws in programming.
+</p>
+<br>
+<p>
+    <u>Siloed Development and its Consequences</u>
+</p>
+<p>
+    This semantic gap of failing to align functional code security with business requirements creates an inherent weakness in the security model. 
+    When a developer prioritizes the application’s immediate function without understanding the broader contextual reality (e.g., this API is called by an external partner, or this field dictates a legal requirement), they introduce two major risks:
+
+</p>
+<br>
+<ol>
+        <li>
+              <strong>Vulnerability by Design: </strong>
+              The architecture supports actions that are technically valid but logically prohibited. 
+              For example, the code allows a user to modify any record they can access (Code Invariant is met), but the business rule is they can only modify records they created (Logic Invariant is violated). 
+              Vulnerabilities of this kind often bypass code review because, from a syntactic perspective, nothing is wrong (the function behaves exactly as written). 
+  
+        </li>
+        <li>
+            <strong>Overreliance on Syntax-Based Tools: </strong>
+            Developers mistakenly believe that passing the SAST/DAST scans is equivalent to good-enough security. 
+            These tools are understandably great for verifying syntax, but are fundamentally blind to semantic flaws. 
+            Having a false sense of assurance in them guarantees that complex logic flaws remain undetected. 
+            Asking some questions can help detect these issues. 
+            Why does the function exist? What business rule(s) does it enforce? How can the business rule(s) be subverted by design? 
+            The last question is particularly significant, as it demands shifting the perspective from the design of the system to the attacker who seeks to exploit the system’s assumptions. 
+            Anticipating how a functionality can be abused assists in answering the ultimate question: 
+            “Does the system behave securely within its intended reality?”
+        </li>
+</ol>
+<br>
+<p>
+    <u>Invariants of Secure Systems</u>
+    <br>
+The defense against logic flaws requires shifting focus from code defects to Logic Invariants. 
+We can still get very close to translating these qualitative business rules into an objective decision matrix, which is important for helping development teams internalize the business context. 
+These Logic Invariants are the formal conditions that must hold true for the system to maintain its intended, secure state, which are typically based on business rules. 
+I have written the Invariants below with associated examples, working off a “payment processing” flow as a baseline function: 
+
+<ul>
+<li><strong>State Invariant:</strong> A user’s account balance cannot be negative</li>
+<li><strong>Time Invariant:</strong> An administrator’s session timeout cannot exceed 60 minutes</li>
+<li><strong>Sequence Invariant:</strong> A payment must be successfully processed before a download link is generated</li>
+</ul>
+</p>
+
+<br>
+
+<p>
+    These combine the classic, fundamental automata and grammar rules with domain-specific comprehension. 
+    In formal languages, automata theory defines what transitions are valid within a system, while grammar establishes the structure that gives meaning to those transitions. 
+    In much the same way, Logic Invariants define the syntax and semantics of business operations (what states are permissible, what sequences are valid, and what must never occur). 
+    When these theoretical boundaries are applied to business systems, they provide the foundation of secure, predictable behavior. 
+    The key difference is that instead of abstract symbols and states, we’re dealing with customer actions, transaction lifecycles, and constraints that are often driven by policy. 
+    Another challenge is that engineers won’t receive these Invariants in perfect, codified form from requirements planning. 
+    They will often need to perform the translation themselves, which is why it’s essential to facilitate conversations with business lines to discover the true contextual constraints in which the application, function, or entire transaction lifecycle will operate. 
+
+</p>
+<br>
+<p>
+    When a developer fails to explicitly configure these rules, the system is left vulnerable to Contextual Drift. 
+    Contextual Drift (aside from the more specific term used in the context of AI coding assistants) can be defined as the state transition where a sequence of individually valid atomic operations results in a security failure because the final state violates an unwritten or undocumented Logic Invariant. 
+    This causes the system state to gradually move away from the intended and authentic business reality. 
+
+</p>
+
+<br>
+<p>
+    Potentially the most frequent example we run into is Privilege Escalation via a logic flaw. 
+    Traditional IAM systems rely on roles and policies to enforce Code Invariants (e.g., “Only users who are assigned the ‘Administrator’ role can call the /delete_user endpoint”). 
+    However, a logic flaw in the application’s sequencing or validation can bypass this. 
+    The classic IDOR vulnerability (my favorite!) occurs when the system exposes a direct reference to an internal implementation object, like a user ID, filename, or database key, and fails to perform an authorization check on that reference based on the active user’s context. 
+    I’m keeping “context” here very general because it’s the truth that IAM systems confirm who you are, but the application logic must confirm what specific resources you are authorized to manipulate in the current transaction. 
+    The authorization systems must enforce the relationship between the user and the object being referenced, not just the user’s assigned role.
+
+</p>
+
+<br>
+<p>
+    Here’s how Contextual Drift enables IDOR:</p>
+
+    <br>
+    <ol>
+    <li>A lower-privileged user calls the /view_user_settings API (valid action).</li>
+<li>The application code retrieves the target user’s ID from the URL parameter (e.g., id=803).</li>
+<li>The application logic fails to check that the id being requested matches the ID of the authenticated user’s token.</li>
+</ol>
+
+<p>
+    The user simply changes the URL parameter from their own ID to an administrator’s ID. 
+    The IAM system validates the token and confirms the user is authenticated, and the application code executes the /view function syntactically correctly. 
+    Yet, a fundamental Logic Invariant (“A user can only view settings associated with their own identity”) is violated. 
+    The user has successfully performed Horizontal Privilege Escalation by exploiting the application’s absence of identity-to-data-linkage context, a very simple example of IDOR.
+
+</p>
+<br>
+<p>
+    So, the business logic–not the IAM role–holds the ultimate authority over resource ownership and access. 
+
+</p>
+<br>
+<p><u>Enforcing Logic as Code</u></p>
+<p>
+    The security team can’t inject the necessary business context alone, as it must be provided by the developer and enforced by the system itself. 
+    The solution requires treating the Logic Invariants with the same rigor as traditional code, establishing governance over system semantics:
+
+</p>
+<br>
+<ul>
+    <li>
+        <strong>Mandate Context Mapping:</strong> Developers should document these Logic Invariants for every single critical transaction flow. This helps translate the business requirement (e.g., “A discount code is single-use”) into a testable pre- and post-condition (pre-condition: code is unused; post-condition: code is marked used). 
+
+    </li>
+    <li>
+        <strong>Configuration as the Logic Enforcer:</strong> Using declarative configuration (IaC) to enforce invariants outside the application code, making them auditable and resilient against code changes. An example of proper enforcement with API Gateway configurations is enforcing sequencing limits based on direct business logic input, not just technical capability (e.g., block all calls to a payment finalization endpoint if a prior state-setting call has not occurred in the current session).
+
+    </li>
+    <li>
+        <strong>Stateful Monitoring:</strong> Signature-based detection is insufficient. Tracking the entire sequence of a user’s session against the expected Sequence Invariant model should be the expectation. And any deviation from the established, secure sequence (e.g., attempting Step 14 before Step 13 has been recorded) should be immediately flagged as Contextual Drift and blocked, regardless of whether the individual call’s syntax was valid. 
+
+    </li>
+</ul>
+<br>
+<p>
+    The ultimate defensive posture is achieved when development teams acknowledge that their primary security task is formalizing and enforcing the Logic Invariants that uphold the business’s contract with its users, regulatory environment, and long-term operational integrity. 
+
+</p>

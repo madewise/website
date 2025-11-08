@@ -17,16 +17,17 @@ ol {
   }
 
 li {
-    margin-bottom: 1em; 
+    margin-bottom: 0.5em; 
     font-size: 18px; 
     line-height: 1.5;
+
   }
 
-li ul {
-    padding-left: 40px; /* indent the bullets more */
-    list-style-type: disc; 
-    font-size: 18px; 
-  }
+
+
+ul {
+  padding-left: 40px;
+}
 
 
 header {
@@ -88,6 +89,8 @@ header nav a:hover {
 
 .sidebar li {
   margin-bottom: 12px;
+  line-height: 1.5;
+
 }
 
 .sidebar a {

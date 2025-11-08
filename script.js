@@ -3,9 +3,10 @@ const toc = [
   { file: 'intro.html',  title: 'Introduction' },
   { file: 'entry1.html', title: 'A Computational Logic Analogy for Regulatory Compliance' },
   { file: 'entry2.html', title: 'Assumption-Driven Design: Human-Model and Model-Model Interaction' },
-  { file: 'entry3.html', title: "You're Speaking to Your General Counsel Wrong" },
+  { file: 'entry3.html', title: "How to Effectively Partner with your General Counsel" },
   { file: 'entry4.html', title: "The Medical Model of Vulnerability Assessment" },
-  { file: 'entry5.html', title: "Why your Bottleneck is Defining of your Entire Environment" }
+  { file: 'entry5.html', title: "Why your Bottleneck is Defining of your Entire Environment" },
+  { file: 'entry6.html', title: "The Contextual Drift of Business Logic" }
 
 
 
