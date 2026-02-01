@@ -1,0 +1,45 @@
+---
+// src/components/sidebar.astro
+import { getCollection } from 'astro:content';
+
+const { collection, mobile = false } = Astro.props;
+
+const entries = await getCollection(collection);
+
+const sortedEntries = entries.sort((a, b) => {
+  const orderA = Number(a.data.order) || 9999;
+  const orderB = Number(b.data.order) || 9999;
+  return orderA - orderB || a.slug.localeCompare(b.slug);
+});
+
+const currentPath = Astro.url.pathname;
+---
+
+{mobile ? (
+  <div class="mobile-drawer-links">
+    {sortedEntries.map(entry => (
+      <a
+        href={`/website/${collection}/${entry.slug}`}
+        class={currentPath === `/${collection}/${entry.slug}` ? 'active' : ''}
+      >
+        {entry.data.title || entry.slug}
+      </a>
+    ))}
+  </div>
+) : (
+  <aside class="sidebar">
+    <h2>{collection.charAt(0).toUpperCase() + collection.slice(1)}</h2>
+    <ul>
+      {sortedEntries.map(entry => (
+        <li>
+          <a
+            href={`/website/${collection}/${entry.slug}`}
+            class={currentPath === `/${collection}/${entry.slug}` ? 'active' : ''}
+          >
+            {entry.data.title || entry.slug}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}

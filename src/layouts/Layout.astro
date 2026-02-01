@@ -1,0 +1,122 @@
+---
+// src/layouts/Layout.astro
+import { getCollection } from 'astro:content';
+import Sidebar from '../components/sidebar.astro';
+
+const { title, activePage } = Astro.props;
+const pathname = Astro.url.pathname;
+
+//  only for entry count in mobile drawer summary
+const notebookCount = (await getCollection('notebook')).length;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title || "Madeline Sykes"}</title>
+  <link rel="stylesheet" href="/website/assets/style.css" />
+</head>
+<body class={
+  activePage === 'about' ? 'aboutpage' :
+  activePage === 'home' ? 'homepage' :
+  activePage === 'notebook' ? 'notebookpage' :
+  activePage === 'artifacts' ? 'artifactspage' :
+  ''
+}>
+  <!-- Mobile Hamburger -->
+  <button id="mobile-menu-toggle" class="mobile-only" aria-label="Open menu">☰</button>
+
+  <!-- Desktop header -->
+  <header class="desktop-header">
+    <div class="header-container">
+      <h1>Madeline Sykes</h1>
+      <nav class="desktop-nav">
+        <a href="/website" class={pathname === '/' || pathname === '/index' ? 'active' : ''}>Home</a>
+        <a href="/website/about" class={pathname === '/about' ? 'active' : ''}>About</a>
+        <a href="/website/notebook" class={pathname.startsWith('/notebook') ? 'active' : ''}>Written Works</a>
+        <a href="/website/artifacts" class={pathname.startsWith('/artifacts') ? 'active' : ''}>Engineering Artifacts</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Madeline Sykes</p>
+  </footer>
+
+  <!-- Mobile side drawer -->
+  <div id="mobile-drawer" class="mobile-drawer">
+    <div class="drawer-header">
+      <button id="mobile-menu-close" aria-label="Close menu">✕</button>
+      <h2>Madeline Sykes</h2>
+    </div>
+      <!-- accordion using sidebar component -->
+<nav class="drawer-nav">
+  <a href="/website" class={pathname === '/' || pathname === '/index' ? 'active' : ''}>Home</a>
+  <a href="/website/about" class={pathname === '/about' ? 'active' : ''}>About</a>
+
+  <!-- Written Works (Thought Matter) -->
+<details class="drawer-accordion" open>
+  <summary class="accordion-summary">
+    <a href="/website/notebook" class="accordion-link">
+      Written Works
+    </a>
+    <span class="accordion-toggle" onclick="event.stopPropagation();">▼</span>
+  </summary>
+  <div class="accordion-content">
+    <Sidebar collection="notebook" mobile={true} />
+  </div>
+</details>
+
+<!-- Engineering Artifacts -->
+<details class="drawer-accordion" open>
+  <summary class="accordion-summary">
+    <a href="/website/artifacts" class="accordion-link">
+      Engineering Artifacts
+    </a>
+    <span class="accordion-toggle" onclick="event.stopPropagation();">▼</span>
+  </summary>
+  <div class="accordion-content">
+    <Sidebar collection="artifacts" mobile={true} />
+  </div>
+</details>
+
+</nav>
+    </nav>
+  </div>
+
+
+  <div id="drawer-overlay" class="overlay"></div>
+
+  <!-- Drawer open/close script -->
+<script>
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const closeBtn = document.getElementById('mobile-menu-close');
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+
+  toggleBtn?.addEventListener('click', () => {
+    drawer.classList.add('open');
+    overlay.classList.add('active');
+    document.body.classList.add('drawer-open'); 
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    drawer.classList.remove('open');
+    overlay.classList.remove('active');
+    document.body.classList.remove('drawer-open');  
+  });
+
+  overlay?.addEventListener('click', () => {
+    drawer.classList.remove('open');
+    overlay.classList.remove('active');
+    document.body.classList.remove('drawer-open');  
+  });
+</script>
+</body>
+</html>

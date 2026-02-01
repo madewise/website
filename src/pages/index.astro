@@ -1,0 +1,150 @@
+---
+// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Madeline Sykes" activePage="home">
+<main class="home-terminal">
+  <div class="terminal-header">
+    <span class="status">ACCESS GRANTED</span>
+  </div>
+
+  <div class="terminal-body">
+    <h1 class="bigname" data-text="Hello, I'm Madeline Sykes">
+      Hello, I'm <span class="name">Madeline Sykes</span>.
+    </h1>
+
+    <div class="typing-container">
+      <p class="typing-line" style="--delay: 0.8s;">
+        Proponent of accessible security.
+      </p>
+      <p class="typing-line" style="--delay: 2.5s;">
+        Building this website as my collection.
+      </p>
+      <p class="typing-line" style="--delay: 4.3s;">
+        My Favorite RFC: RFC 3514
+      </p>
+    </div>
+
+    <p class="connect" style="--delay: 5.5s;">
+      Connect on 
+      <a href="https://www.linkedin.com/in/madelinewise/" target="_blank" rel="noopener noreferrer">
+        LinkedIn <span class="external"></span>
+      </a>
+    </p>
+    <p style="text-align:center;  color:#444; margin-top:10px;">
+  Design inspired by <strong><i>WATCH_DOGS</i> (2014)</strong>
+</p>
+  </div>
+
+
+</main>
+
+<style>
+  /* Styles used only for the main page */
+  .home-terminal {
+    max-width: 900px;
+    margin: 120px auto 80px;
+    background: #0a0f14;
+    border: 1px solid #00d4ff30;
+    border-radius: 4px;
+    box-shadow: 
+      0 0 40px rgba(0, 212, 255, 0.15),
+      inset 0 0 20px rgba(0, 212, 255, 0.05);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .terminal-header {
+    background: #000;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #00d4ff80;
+    border-bottom: 1px solid #00d4ff20;
+  }
+
+  .status {
+    color: #00ff9d;
+    text-shadow: 0 0 4px #00ff9d60;
+  }
+
+  .timestamp {
+    color: #ff4081;
+  }
+
+  .terminal-body {
+    padding: 60px 60px 40px;
+    text-align: center;
+  }
+
+  .bigname {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #00d4ff;
+    margin-bottom: 2rem;
+  }
+
+  .typing-container {
+    max-width: 680px;
+    margin: 0 auto 3rem;
+    font-family: 'Courier New', monospace;
+    font-size: 1.35rem;
+    line-height: 1.9;
+    color: #b0e0ff;
+    text-align: left;
+    text-shadow: 0 0 3px rgba(0, 212, 255, 0.3);
+  }
+
+  .typing-line {
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: 
+      fadeIn 0.1s forwards,
+      typing 3s steps(60, end) forwards;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  .connect {
+    font-size: 1.2rem;
+    color: #a0c0ff;
+    opacity: 0;
+    animation: fadeIn 0.8s forwards 5.5s;
+  }
+
+
+
+  .external {
+    font-size: 0.9rem;
+    margin-left: 4px;
+    color: #ff4081;
+  }
+
+
+
+  .home-terminal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+
+</style>

@@ -1,0 +1,22 @@
+---
+// src/pages/artifacts/index.astro
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/sidebar.astro'; 
+import { getEntry, getCollection } from 'astro:content';
+
+
+const artifacts = await getCollection('artifacts');
+const sorted = artifacts.sort((a, b) => (Number(a.data.order) || 999) - (Number(b.data.order) || 999));
+---
+
+<Layout title="Engineering Artifacts | Madeline Sykes" activePage="artifacts">
+  <div class="container">
+    <Sidebar collection="artifacts" /> 
+
+    <main class="content">
+      <h2>Welcome to Engineering Artifacts</h2>
+      <p>Selection of technical implementation works.</p>
+
+    </main>
+  </div>
+</Layout>

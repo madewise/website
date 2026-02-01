@@ -1,0 +1,52 @@
+---
+// src/pages/artifacts/[slug].astro
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/sidebar.astro';
+import { getEntry, getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const artifacts = await getCollection('artifacts');
+  return artifacts.map(artifact => ({
+    params: { slug: artifact.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const artifact = await getEntry('artifacts', slug);
+
+if (!artifact) {
+  return Astro.redirect('/artifacts');
+}
+
+const { Content } = await artifact.render();
+---
+
+<Layout title={`${artifact.data.title} | Engineering Artifacts`} activePage="artifacts">
+  <div class="container">
+    <Sidebar collection="artifacts"/>
+
+              
+<main class="content entry-detail">
+      <header class="entry-header">
+        <h1 class="entry-title">{artifact.data.title}</h1>
+        {artifact.data.github && (
+      <p class="entry-github">
+          GitHub: <a href={artifact.data.github} target="_blank" rel="noopener noreferrer">
+         View on GitHub ↗
+      </a>
+  </p>
+)}
+      </header>
+
+ 
+        <div class="entry-content">
+          <Content />
+        </div>
+        <p style="margin-top: 40px;">
+          <a href="/website/artifacts">← Back to main</a>
+        </p>
+      </article>
+    </main>
+ 
+  </div>
+</Layout>

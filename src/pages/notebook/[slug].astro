@@ -1,0 +1,45 @@
+---
+// src/pages/notebook/[slug].astro
+import Layout from '../../layouts/Layout.astro';
+import Sidebar from '../../components/sidebar.astro';
+import { getEntry, getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('notebook');
+  return entries.map(e => ({ params: { slug: e.slug } }));
+}
+
+const { slug } = Astro.params;
+const entry = await getEntry('notebook', slug);
+if (!entry) return Astro.redirect('/notebook');
+const { Content } = await entry.render();
+
+const started = entry.data.date.toLocaleDateString('en-US', {
+  month: 'numeric',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+
+<Layout title={`${entry.data.title} | Written Works`} activePage="notebook">
+  <div class="container">
+    <Sidebar collection="notebook" />
+
+<main class="content entry-detail">
+      <header class="entry-header">
+        <h1 class="entry-title">{entry.data.title}</h1>
+        <p class="entry-started">Started writing: {started}</p>
+      </header>
+
+      <article class="entry-body">
+        <Content />
+      </article>
+      <p class="back-link">
+        <a href="/website/notebook">← Back to main</a>
+      </p>
+    </main>
+  </div>
+</Layout>
+
